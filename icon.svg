@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="shoumemyjobs">
+  <rect width="32" height="32" rx="7" fill="#1a1a1e"/>
+  <g fill="none" stroke="#8aafd6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 10.5V22c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10.5" stroke-width="1.75"/>
+    <path d="M11 10.5V8.5c0-1.66 1.34-3 3-3h4c1.66 0 3 1.34 3 3v2" stroke-width="1.75"/>
+    <path d="M10.5 16h4M10.5 19.5h11M17.5 16h4" stroke-width="1.5" opacity="0.9"/>
+  </g>
+  <circle cx="23" cy="12" r="2.25" fill="#8aafd6" opacity="0.45"/>
+</svg>
