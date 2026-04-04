@@ -18,7 +18,50 @@
     padding: 16px;
   }
   h1 { color: #f5f5f7; font-size: clamp(0.95rem, 1.8vw, 1.3rem); font-weight: 600; margin-bottom: 8px; text-align: center; }
-  .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  .controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; width: 100%; max-width: 720px; }
+  .keyword-field {
+    flex: 1 1 200px;
+    min-width: 160px;
+    max-width: 100%;
+    display: flex;
+    align-items: stretch;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #2c2c2e, #232325);
+    transition: border-color 0.2s;
+    overflow: hidden;
+  }
+  .keyword-field:hover { border-color: rgba(255,255,255,0.3); }
+  .keyword-field:focus-within { border-color: rgba(255,255,255,0.35); }
+  .keyword-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: #f5f5f7;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 4px 6px 14px;
+    outline: none;
+  }
+  .keyword-input::placeholder { color: #636366; }
+  .keyword-clear {
+    flex-shrink: 0;
+    width: 34px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #86868b;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 0 20px 20px 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  .keyword-clear:hover { color: #f5f5f7; background: rgba(255,255,255,0.06); }
+  .keyword-clear:focus-visible { outline: 2px solid rgba(255,255,255,0.35); outline-offset: -2px; }
+  .keyword-clear[hidden] { display: none !important; }
   select {
     appearance: none;
     background: linear-gradient(145deg, #2c2c2e, #232325);
@@ -36,6 +79,29 @@
     transition: border-color 0.2s;
   }
   select:hover { border-color: rgba(255,255,255,0.3); }
+  .control-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #f5f5f7;
+    font-size: 0.8rem;
+    font-weight: 500;
+    user-select: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: linear-gradient(145deg, #2c2c2e, #232325);
+    transition: border-color 0.2s;
+  }
+  .control-check:hover { border-color: rgba(255,255,255,0.3); }
+  .control-check input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #4a6fa5;
+    cursor: pointer;
+  }
   .us-wrap { display: flex; justify-content: center; margin-bottom: 10px; width: 100%; max-width: 720px; }
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 720px; }
 
@@ -115,9 +181,13 @@
 </head>
 <body>
 
-<h1>🔍 Software Engineer Jobs</h1>
+<h1>🔍 LinkedIn Jobs</h1>
 
 <div class="controls">
+  <div class="keyword-field">
+    <input type="text" id="keywordInput" class="keyword-input" oninput="onKeywordInput()" autocomplete="off" spellcheck="true" aria-label="Job keywords" placeholder="software engineer" />
+    <button type="button" id="keywordClearBtn" class="keyword-clear" onclick="clearKeywordInput()" aria-label="Clear keywords" hidden>×</button>
+  </div>
   <select id="timeFilter" onchange="updateLinks()">
     <option value="r86400">Past 24 Hours</option>
     <option value="r604800">Past Week</option>
@@ -126,6 +196,10 @@
     <option value="">All Companies</option>
     <option value="top400">Top 400 Companies</option>
   </select>
+  <label class="control-check">
+    <input type="checkbox" id="easyApplyFilter" onchange="onEasyApplyChange()" />
+    Easy Apply
+  </label>
 </div>
 
 <div class="us-wrap">
@@ -182,16 +256,78 @@ const usBase = 'https://www.linkedin.com/jobs/search/?keywords=software%2Bengine
 
 const top400 = '1441%2C1035%2C1063%2C10667%2C1044%2C74126343%2C1406226%2C2301992%2C1482%2C1612748%2C162479%2C2646%2C1028%2C1480%2C1586%2C3185%2C11130470%2C1815218%2C1307%2C1384%2C17900793%2C2857634%2C3653845%2C1009%2C1068%2C1277%2C1382%2C1419%2C165158%2C2320329%2C2532%2C2532259%2C3254263%2C3432%2C3608%2C3991822%2C807257%2C1123%2C1344%2C1353%2C1418841%2C1463%2C1512%2C15564%2C1594050%2C17988315%2C19722%2C20708%2C2157%2C2381%2C2494%2C2622%2C2684737%2C3015%2C3081%2C3140%2C434598%2C497017%2C6453825%2C6481%2C7597308%2C783611%2C88007673%2C96151950%2C1016%2C1053%2C1066442%2C1073%2C1090%2C1110454%2C11448%2C1304385%2C13216%2C14059116%2C1449%2C1472%2C1483%2C1486%2C163864%2C165755%2C167251%2C1680%2C1852%2C1900%2C2017%2C2107%2C2213%2C2271%2C2272%2C2433416%2C2497653%2C2732417%2C33246798%2C3477522%2C3653%2C400528%2C40653509%2C407222%2C414478%2C4257%2C4680%2C47456%2C4764%2C6440%2C68543%2C81490090%2C89566597%2C90534028%2C9373737%2C9703%2C10039903%2C10043614%2C10051%2C1015%2C10266947%2C103539865%2C10387903%2C105067979%2C1052%2C106472122%2C1066%2C1067%2C1070%2C107009595%2C1099749%2C1103%2C11062162%2C11097923%2C111502955%2C1116%2C11193683%2C11221093%2C1124131%2C11348%2C114685%2C11700676%2C1185%2C1194036%2C12227%2C12596773%2C1262%2C1292%2C1301808%2C1337%2C13386%2C13455368%2C1371%2C137338%2C138522%2C13856%2C13922%2C1397%2C13990%2C14014026%2C140497%2C141203%2C14140%2C1421%2C1426%2C1430329%2C1431%2C14641043%2C1481%2C14824547%2C14984%2C150573%2C15088102%2C1511%2C15191764%2C1523%2C15283%2C1534%2C15415277%2C1544%2C157236%2C157261%2C157328%2C1612%2C162359%2C162901%2C163001%2C163025%2C163062%2C163225%2C163658%2C1637%2C1642%2C165257%2C165481%2C165597%2C165686%2C1657%2C1663%2C166377%2C166551%2C1666%2C166714%2C1669%2C167212%2C167280%2C1689%2C1694%2C1703%2C1713404%2C1720%2C1753%2C1767%2C1771432%2C17719%2C1784%2C18293159%2C1835%2C1841%2C18476%2C18505670%2C18516949%2C18544771%2C18563089%2C1864%2C1879%2C19013801%2C19022%2C19029173%2C19090994%2C1912%2C19327%2C1935818%2C19857%2C2019%2C2029%2C2068%2C207470%2C208639%2C2105%2C2114%2C21250%2C2127%2C21554%2C2162%2C2190%2C2192%2C22026%2C2228495%2C22523%2C22688%2C2281734%2C229433%2C2300%2C2311%2C23213%2C2336%2C2340%2C2382910%2C238481%2C2387%2C2429%2C2445%2C2449%2C2453129%2C2490%2C24972212%2C2553488%2C2562%2C2576%2C2602140%2C2602522%2C2620735%2C2659008%2C2665404%2C2677%2C2685826%2C2701%2C2709%2C27159855%2C2748%2C2751%2C2770554%2C2830763%2C28503674%2C2850862%2C2866215%2C2911%2C2912258%2C29352%2C2963249%2C2973736%2C30086%2C3072%2C3076102%2C30898036%2C309694%2C3102%2C3163250%2C31863%2C3205573%2C3249443%2C325883%2C3264%2C3282%2C3283052%2C33267352%2C3330%2C3379%2C3503%2C35462987%2C35472496%2C3589%2C3593313%2C36229%2C3625%2C3626%2C362833%2C3631%2C3640016%2C3650502%2C3678%2C3690%2C3701%2C3738695%2C3765675%2C3769390%2C3806620%2C3831%2C3895%2C3896%2C3915%2C3925%2C3961%2C3998145%2C4037%2C4066%2C40761690%2C4128%2C4236%2C4334%2C439853%2C4413%2C45918%2C4599%2C4674%2C4840301%2C4872230%2C4914%2C4945%2C5097%2C5102948%2C5110%2C5121%2C5295%2C5309478%2C5315%2C5343%2C5383634%2C5390798%2C5553%2C5626%2C568384%2C5755%2C5756%2C6176%2C64552867%2C65706971%2C6684%2C68155%2C6816%2C68529%2C6866%2C691170%2C69208525%2C720405%2C7207%2C72305380%2C72662117%2C730004%2C73428078%2C74882602%2C7545%2C76987811%2C77752302%2C7789%2C78378114%2C78467539%2C7929354%2C794800%2C7990%2C80069%2C80086817%2C8074624%2C807593%2C8093%2C81527214%2C8211%2C8221%2C822535%2C8306%2C8403%2C8459%2C861427%2C884316%2C888943%2C89964146%2C926041%2C9266905%2C92822040%2C92917818%2C92950%2C931891%2C93670294%2C9408755%2C96347071%2C96366777%2C983286%2C2276';
 
+const KEYWORDS_STORAGE_KEY = 'liJobKeywords';
+const EASY_APPLY_STORAGE_KEY = 'liJobEasyApply';
+const DEFAULT_KEYWORDS = 'software engineer';
+
+function encodeLinkedInKeywords(phrase) {
+  const t = (phrase || '').trim() || DEFAULT_KEYWORDS;
+  return encodeURIComponent(t).replace(/%20/g, '+');
+}
+
+function withKeywords(url, encodedKw) {
+  return url.replace(/keywords=[^&]+/, 'keywords=' + encodedKw);
+}
+
 function updateLinks() {
+  const kwInput = document.getElementById('keywordInput');
+  const enc = encodeLinkedInKeywords(kwInput.value);
   const tpr = document.getElementById('timeFilter').value;
   const co = document.getElementById('companyFilter').value;
   const cParam = co === 'top400' ? '&f_C=' + top400 : '';
+  const easyParam = document.getElementById('easyApplyFilter').checked ? '&f_AL=true' : '';
+  const suffix = '&f_TPR=' + tpr + cParam + easyParam;
   states.forEach(s => {
-    document.getElementById('btn-' + s.id).href = s.base + '&f_TPR=' + tpr + cParam;
+    document.getElementById('btn-' + s.id).href = withKeywords(s.base, enc) + suffix;
   });
-  document.getElementById('usBtn').href = usBase + '&f_TPR=' + tpr + cParam;
+  document.getElementById('usBtn').href = withKeywords(usBase, enc) + suffix;
 }
 
+function syncKeywordClearBtn() {
+  const el = document.getElementById('keywordInput');
+  const btn = document.getElementById('keywordClearBtn');
+  btn.toggleAttribute('hidden', !el.value);
+}
+
+function onKeywordInput() {
+  try {
+    sessionStorage.setItem(KEYWORDS_STORAGE_KEY, document.getElementById('keywordInput').value);
+  } catch (e) { /* private mode / quota */ }
+  syncKeywordClearBtn();
+  updateLinks();
+}
+
+function clearKeywordInput() {
+  const el = document.getElementById('keywordInput');
+  el.value = '';
+  el.focus();
+  onKeywordInput();
+}
+
+function onEasyApplyChange() {
+  try {
+    sessionStorage.setItem(EASY_APPLY_STORAGE_KEY, document.getElementById('easyApplyFilter').checked ? '1' : '');
+  } catch (e) { /* private mode / quota */ }
+  updateLinks();
+}
+
+(function initKeywords() {
+  let saved = null;
+  try {
+    saved = sessionStorage.getItem(KEYWORDS_STORAGE_KEY);
+  } catch (e) { /* ignore */ }
+  document.getElementById('keywordInput').value = saved === null ? DEFAULT_KEYWORDS : saved;
+})();
+
+(function initEasyApply() {
+  let v = null;
+  try {
+    v = sessionStorage.getItem(EASY_APPLY_STORAGE_KEY);
+  } catch (e) { /* ignore */ }
+  document.getElementById('easyApplyFilter').checked = v === '1';
+})();
+
+syncKeywordClearBtn();
 updateLinks();
 </script>
 </body>
