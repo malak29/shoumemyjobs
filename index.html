@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinkedIn Jobs by State</title>
+<title>shoumemyjobs · LinkedIn job links</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; }
@@ -17,7 +17,62 @@
     justify-content: center;
     padding: 16px;
   }
-  h1 { color: #f5f5f7; font-size: clamp(0.95rem, 1.8vw, 1.3rem); font-weight: 600; margin-bottom: 8px; text-align: center; }
+
+  .brand {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .brand-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-sheen {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.09) 45%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.09) 55%, transparent 100%);
+    animation: sheenMove 4.2s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: soft-light;
+  }
+  .brand-logo {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8aafd6;
+  }
+  .brand-logo svg { width: 32px; height: 32px; display: block; }
+  .brand-words { min-width: 0; text-align: left; }
+  .brand-title {
+    color: #f5f5f7;
+    font-size: clamp(1.15rem, 3.2vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .brand-sub {
+    color: #86868b;
+    font-size: clamp(0.72rem, 1.5vw, 0.82rem);
+    font-weight: 500;
+    margin-top: 3px;
+    letter-spacing: 0.02em;
+  }
   .controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; width: 100%; max-width: 720px; }
   .keyword-field {
     flex: 1 1 200px;
@@ -181,7 +236,23 @@
 </head>
 <body>
 
-<h1>🔍 LinkedIn Jobs</h1>
+<header class="brand" role="banner" aria-label="shoumemyjobs">
+  <div class="brand-sheen" aria-hidden="true"></div>
+  <div class="brand-inner">
+    <div class="brand-logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M8 10.5V22c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M11 10.5V8.5c0-1.66 1.34-3 3-3h4c1.66 0 3 1.34 3 3v2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.5 16h4M10.5 19.5h11M17.5 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+        <circle cx="23" cy="12" r="2.25" fill="currentColor" opacity="0.35"/>
+      </svg>
+    </div>
+    <div class="brand-words">
+      <h1 class="brand-title">shoumemyjobs</h1>
+      <p class="brand-sub">LinkedIn Jobs · US &amp; state links</p>
+    </div>
+  </div>
+</header>
 
 <div class="controls">
   <div class="keyword-field">
@@ -189,8 +260,10 @@
     <button type="button" id="keywordClearBtn" class="keyword-clear" onclick="clearKeywordInput()" aria-label="Clear keywords" hidden>×</button>
   </div>
   <select id="timeFilter" onchange="updateLinks()">
-    <option value="r86400">Past 24 Hours</option>
+    <option value="r86400" selected>Past 24 Hours</option>
     <option value="r604800">Past Week</option>
+    <option value="r2592000">Past Month</option>
+    <option value="">All time</option>
   </select>
   <select id="companyFilter" onchange="updateLinks()">
     <option value="">All Companies</option>
@@ -209,47 +282,47 @@
 </div>
 
 <div class="grid">
-  <a id="btn-wa" class="btn wa" href="" target="_blank"><span class="flag">🏔️</span> Washington <span class="arrow">›</span></a>
-  <a id="btn-il" class="btn il" href="" target="_blank"><span class="flag">🏙️</span> Illinois <span class="arrow">›</span></a>
-  <a id="btn-ga" class="btn ga" href="" target="_blank"><span class="flag">🍑</span> Georgia <span class="arrow">›</span></a>
-  <a id="btn-co" class="btn co" href="" target="_blank"><span class="flag">🎿</span> Colorado <span class="arrow">›</span></a>
-  <a id="btn-tx" class="btn tx" href="" target="_blank"><span class="flag">⭐</span> Texas <span class="arrow">›</span></a>
-  <a id="btn-ca" class="btn ca" href="" target="_blank"><span class="flag">🌁</span> California <span class="arrow">›</span></a>
-  <a id="btn-ma" class="btn ma" href="" target="_blank"><span class="flag">🦅</span> Massachusetts <span class="arrow">›</span></a>
-  <a id="btn-fl" class="btn fl" href="" target="_blank"><span class="flag">☀️</span> Florida <span class="arrow">›</span></a>
-  <a id="btn-ny" class="btn ny" href="" target="_blank"><span class="flag">🗽</span> New York <span class="arrow">›</span></a>
-  <a id="btn-va" class="btn va" href="" target="_blank"><span class="flag">🏛️</span> Virginia <span class="arrow">›</span></a>
   <a id="btn-az" class="btn az" href="" target="_blank"><span class="flag">🌵</span> Arizona <span class="arrow">›</span></a>
-  <a id="btn-nv" class="btn nv" href="" target="_blank"><span class="flag">🎲</span> Nevada <span class="arrow">›</span></a>
-  <a id="btn-ut" class="btn ut" href="" target="_blank"><span class="flag">🏜️</span> Utah <span class="arrow">›</span></a>
-  <a id="btn-nc" class="btn nc" href="" target="_blank"><span class="flag">🌳</span> North Carolina <span class="arrow">›</span></a>
+  <a id="btn-ca" class="btn ca" href="" target="_blank"><span class="flag">🌁</span> California <span class="arrow">›</span></a>
+  <a id="btn-co" class="btn co" href="" target="_blank"><span class="flag">🎿</span> Colorado <span class="arrow">›</span></a>
+  <a id="btn-fl" class="btn fl" href="" target="_blank"><span class="flag">☀️</span> Florida <span class="arrow">›</span></a>
+  <a id="btn-ga" class="btn ga" href="" target="_blank"><span class="flag">🍑</span> Georgia <span class="arrow">›</span></a>
+  <a id="btn-il" class="btn il" href="" target="_blank"><span class="flag">🏙️</span> Illinois <span class="arrow">›</span></a>
+  <a id="btn-ma" class="btn ma" href="" target="_blank"><span class="flag">🦅</span> Massachusetts <span class="arrow">›</span></a>
   <a id="btn-mi" class="btn mi" href="" target="_blank"><span class="flag">🚘</span> Michigan <span class="arrow">›</span></a>
-  <a id="btn-pa" class="btn pa" href="" target="_blank"><span class="flag">🔭</span> Pennsylvania <span class="arrow">›</span></a>
-  <a id="btn-or" class="btn or" href="" target="_blank"><span class="flag">🌧️</span> Oregon <span class="arrow">›</span></a>
   <a id="btn-mn" class="btn mn" href="" target="_blank"><span class="flag">🌨️</span> Minnesota <span class="arrow">›</span></a>
+  <a id="btn-nv" class="btn nv" href="" target="_blank"><span class="flag">🎲</span> Nevada <span class="arrow">›</span></a>
+  <a id="btn-ny" class="btn ny" href="" target="_blank"><span class="flag">🗽</span> New York <span class="arrow">›</span></a>
+  <a id="btn-nc" class="btn nc" href="" target="_blank"><span class="flag">🌳</span> North Carolina <span class="arrow">›</span></a>
+  <a id="btn-or" class="btn or" href="" target="_blank"><span class="flag">🌧️</span> Oregon <span class="arrow">›</span></a>
+  <a id="btn-pa" class="btn pa" href="" target="_blank"><span class="flag">🔭</span> Pennsylvania <span class="arrow">›</span></a>
+  <a id="btn-tx" class="btn tx" href="" target="_blank"><span class="flag">⭐</span> Texas <span class="arrow">›</span></a>
+  <a id="btn-ut" class="btn ut" href="" target="_blank"><span class="flag">🏜️</span> Utah <span class="arrow">›</span></a>
+  <a id="btn-va" class="btn va" href="" target="_blank"><span class="flag">🏛️</span> Virginia <span class="arrow">›</span></a>
+  <a id="btn-wa" class="btn wa" href="" target="_blank"><span class="flag">🏔️</span> Washington <span class="arrow">›</span></a>
 </div>
 
 <script>
 // Base URLs (no f_TPR, no f_C) — state confirmed by you one by one
 const states = [
-  { id: 'wa', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104116203%2C106619589%2C104145663%2C103255706%2C102047285%2C103317020%2C105284588%2C102780895%2C100919703%2C101001492%2C102105473%2C102934382&f_WT=2%2C1%2C3&geoId=103977389&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'il', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103112676%2C101957782%2C103159347%2C117129172%2C103998438%2C106026973%2C101565517%2C101692508%2C102665576%2C104045661%2C115637822%2C100095672%2C102958361%2C103433271&f_WT=1%2C3%2C2&geoId=101949407&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'ga', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=106224388%2C105409290%2C102112377%2C101352188%2C102119889%2C104139580%2C104172266%2C104295229%2C104318412%2C105654928%2C105972365&f_WT=1%2C3%2C2&geoId=103950076&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'co', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103736294%2C100182490%2C106606877%2C102597912%2C102909269%2C103881384%2C101851648%2C101077878%2C101539691%2C101568126%2C105221401%2C104469362%2C105777453&f_WT=2%2C1%2C3&geoId=105763813&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'tx', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104472865%2C100517351%2C104194190%2C103743442%2C102387510%2C102164100%2C105399175%2C105918502%2C100432370%2C102396835&f_WT=2%2C1%2C3&geoId=102748797&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'ca', base: 'https://www.linkedin.com/jobs/search/?f_PP=102277331%2C102250832%2C104119503%2C106233382%2C101876708%2C100075706%2C103918656%2C102448103%2C100472083%2C103575230%2C107180219%2C105883676%2C106138232&f_WT=1%2C3%2C2&keywords=software%2Bengineer&location=California%2C%20United%20States&origin=JOB_SEARCH_PAGE_JOB_FILTER&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'ma', base: 'https://www.linkedin.com/jobs/search/?distance=100&f_PP=102380872%2C104597301%2C101568447%2C101137455%2C100807683%2C100030488%2C101246119%2C104181684%2C104362249%2C104107141&f_WT=1%2C3%2C2&geoId=101098412&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'fl', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102394087%2C105517665%2C100868799%2C105142029%2C103980349%2C105858804%2C101696514%2C106033654%2C100939624%2C104341466%2C104399612%2C100177841&f_WT=2%2C1%2C3&geoId=101318387&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'ny', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102571732%2C104361728%2C102201911%2C103676418%2C106553046%2C100074394%2C102570389%2C103138200%2C106027227%2C106143248%2C101240286%2C102405191%2C102462061%2C102645914&f_WT=1%2C3%2C2&geoId=105080838&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'va', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104290390%2C106504367%2C104624893%2C106413121%2C105811802%2C102114334%2C105449217%2C105458072%2C104907323%2C106467072%2C106481878%2C103715657&f_WT=2%2C1%2C3&geoId=101630962&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'az', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=100219842%2C106777968%2C100855814%2C103752383%2C101526294%2C102646316%2C104278762%2C104658974&f_WT=1%2C3%2C2&geoId=106032500&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'nv', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_WT=1%2C3%2C2&geoId=101690912&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'ut', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104664804%2C103250458%2C101449695%2C102542081%2C104423381%2C100818865%2C103005356%2C105289070%2C106424145%2C106666694&f_WT=2%2C1%2C3&geoId=104102239&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'nc', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102264677%2C100197101%2C101915197%2C104987206%2C106517346%2C106414689%2C103683544%2C104476887%2C105122117%2C101772619%2C102229593%2C104001298&f_WT=1%2C3%2C2&geoId=103255397&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'ca', base: 'https://www.linkedin.com/jobs/search/?f_PP=102277331%2C102250832%2C104119503%2C106233382%2C101876708%2C100075706%2C103918656%2C102448103%2C100472083%2C103575230%2C107180219%2C105883676%2C106138232&f_WT=1%2C3%2C2&keywords=software%2Bengineer&location=California%2C%20United%20States&origin=JOB_SEARCH_PAGE_JOB_FILTER&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'co', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103736294%2C100182490%2C106606877%2C102597912%2C102909269%2C103881384%2C101851648%2C101077878%2C101539691%2C101568126%2C105221401%2C104469362%2C105777453&f_WT=2%2C1%2C3&geoId=105763813&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'fl', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102394087%2C105517665%2C100868799%2C105142029%2C103980349%2C105858804%2C101696514%2C106033654%2C100939624%2C104341466%2C104399612%2C100177841&f_WT=2%2C1%2C3&geoId=101318387&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'ga', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=106224388%2C105409290%2C102112377%2C101352188%2C102119889%2C104139580%2C104172266%2C104295229%2C104318412%2C105654928%2C105972365&f_WT=1%2C3%2C2&geoId=103950076&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'il', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103112676%2C101957782%2C103159347%2C117129172%2C103998438%2C106026973%2C101565517%2C101692508%2C102665576%2C104045661%2C115637822%2C100095672%2C102958361%2C103433271&f_WT=1%2C3%2C2&geoId=101949407&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'ma', base: 'https://www.linkedin.com/jobs/search/?distance=100&f_PP=102380872%2C104597301%2C101568447%2C101137455%2C100807683%2C100030488%2C101246119%2C104181684%2C104362249%2C104107141&f_WT=1%2C3%2C2&geoId=101098412&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'mi', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102965250%2C105053977%2C100907329%2C105472288%2C103541266%2C104041729%2C100578909%2C103571377%2C104093580%2C106646796%2C100550015%2C103624908&f_WT=1%2C3%2C2&geoId=103051080&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'pa', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=101351937%2C104937023%2C102584852%2C102882737%2C103946774%2C104131948%2C104764460%2C105478187%2C105590361%2C106588646%2C100705436%2C101079245%2C106232840&f_WT=1%2C3%2C2&geoId=102986501&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'or', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104727230%2C102572422%2C100217443%2C107027538%2C101002866%2C103682925%2C105599308%2C101147714%2C104821631&f_WT=2%2C1%2C3&geoId=101685541&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'mn', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103039849%2C104345331%2C106162990%2C100540717%2C100636675%2C102370339%2C103480654%2C106607716%2C100094914%2C101183457%2C102971931%2C105782582&f_WT=1%2C3%2C2&geoId=103411167&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'nv', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_WT=1%2C3%2C2&geoId=101690912&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'ny', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102571732%2C104361728%2C102201911%2C103676418%2C106553046%2C100074394%2C102570389%2C103138200%2C106027227%2C106143248%2C101240286%2C102405191%2C102462061%2C102645914&f_WT=1%2C3%2C2&geoId=105080838&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'nc', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102264677%2C100197101%2C101915197%2C104987206%2C106517346%2C106414689%2C103683544%2C104476887%2C105122117%2C101772619%2C102229593%2C104001298&f_WT=1%2C3%2C2&geoId=103255397&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'or', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104727230%2C102572422%2C100217443%2C107027538%2C101002866%2C103682925%2C105599308%2C101147714%2C104821631&f_WT=2%2C1%2C3&geoId=101685541&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'pa', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=101351937%2C104937023%2C102584852%2C102882737%2C103946774%2C104131948%2C104764460%2C105478187%2C105590361%2C106588646%2C100705436%2C101079245%2C106232840&f_WT=1%2C3%2C2&geoId=102986501&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'tx', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104472865%2C100517351%2C104194190%2C103743442%2C102387510%2C102164100%2C105399175%2C105918502%2C100432370%2C102396835&f_WT=2%2C1%2C3&geoId=102748797&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'ut', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104664804%2C103250458%2C101449695%2C102542081%2C104423381%2C100818865%2C103005356%2C105289070%2C106424145%2C106666694&f_WT=2%2C1%2C3&geoId=104102239&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'va', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104290390%2C106504367%2C104624893%2C106413121%2C105811802%2C102114334%2C105449217%2C105458072%2C104907323%2C106467072%2C106481878%2C103715657&f_WT=2%2C1%2C3&geoId=101630962&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'wa', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=104116203%2C106619589%2C104145663%2C103255706%2C102047285%2C103317020%2C105284588%2C102780895%2C100919703%2C101001492%2C102105473%2C102934382&f_WT=2%2C1%2C3&geoId=103977389&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
 ];
 
 const usBase = 'https://www.linkedin.com/jobs/search/?keywords=software%2Bengineer&location=United%20States&origin=JOB_SEARCH_PAGE_JOB_FILTER&sortBy=DD&spellCorrectionEnabled=true';
@@ -272,11 +345,12 @@ function withKeywords(url, encodedKw) {
 function updateLinks() {
   const kwInput = document.getElementById('keywordInput');
   const enc = encodeLinkedInKeywords(kwInput.value);
-  const tpr = document.getElementById('timeFilter').value;
+  const tprVal = document.getElementById('timeFilter').value;
+  const tprParam = tprVal ? '&f_TPR=' + tprVal : '';
   const co = document.getElementById('companyFilter').value;
   const cParam = co === 'top400' ? '&f_C=' + top400 : '';
   const easyParam = document.getElementById('easyApplyFilter').checked ? '&f_AL=true' : '';
-  const suffix = '&f_TPR=' + tpr + cParam + easyParam;
+  const suffix = tprParam + cParam + easyParam;
   states.forEach(s => {
     document.getElementById('btn-' + s.id).href = withKeywords(s.base, enc) + suffix;
   });
