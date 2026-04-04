@@ -164,6 +164,64 @@
     accent-color: #4a6fa5;
     cursor: pointer;
   }
+  .exp-dropdown {
+    position: relative;
+    flex: 0 1 auto;
+  }
+  .exp-dropdown > summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    color: #f5f5f7;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 32px 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: linear-gradient(145deg, #2c2c2e, #232325);
+    transition: border-color 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386868b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+  .exp-dropdown > summary::-webkit-details-marker { display: none; }
+  .exp-dropdown[open] > summary { border-color: rgba(255,255,255,0.35); }
+  .exp-dropdown > summary:hover { border-color: rgba(255,255,255,0.3); }
+  .exp-panel {
+    position: absolute;
+    z-index: 100;
+    left: 0;
+    top: calc(100% + 6px);
+    min-width: 240px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: linear-gradient(165deg, #2e2e32, #222226);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #f5f5f7;
+    cursor: pointer;
+  }
+  .exp-row input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: #4a6fa5;
+    cursor: pointer;
+  }
   .us-wrap { display: flex; justify-content: center; margin-bottom: 10px; width: 100%; max-width: 720px; }
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 720px; }
 
@@ -266,16 +324,27 @@
     <input type="text" id="keywordInput" class="keyword-input" oninput="onKeywordInput()" autocomplete="off" spellcheck="true" aria-label="Job keywords" placeholder="software engineer" />
     <button type="button" id="keywordClearBtn" class="keyword-clear" onclick="clearKeywordInput()" aria-label="Clear keywords" hidden>×</button>
   </div>
-  <select id="timeFilter" onchange="updateLinks()">
+  <select id="timeFilter" onchange="onTimeFilterChange()">
     <option value="r86400" selected>Past 24 Hours</option>
     <option value="r604800">Past Week</option>
     <option value="r2592000">Past Month</option>
     <option value="">All time</option>
   </select>
-  <select id="companyFilter" onchange="updateLinks()">
+  <select id="companyFilter" onchange="onCompanyFilterChange()">
     <option value="">All Companies</option>
     <option value="top400">Top 400 Companies</option>
   </select>
+  <details class="exp-dropdown" id="expDropdown">
+    <summary class="exp-summary"><span id="expSummaryLabel">Experience · 4 levels</span></summary>
+    <div class="exp-panel" role="group" aria-label="Experience level">
+      <label class="exp-row"><input type="checkbox" id="exp1" value="1" checked onchange="onExpFilterChange()" /> Internship</label>
+      <label class="exp-row"><input type="checkbox" id="exp2" value="2" checked onchange="onExpFilterChange()" /> Entry level</label>
+      <label class="exp-row"><input type="checkbox" id="exp3" value="3" checked onchange="onExpFilterChange()" /> Associate</label>
+      <label class="exp-row"><input type="checkbox" id="exp4" value="4" checked onchange="onExpFilterChange()" /> Mid-Senior level</label>
+      <label class="exp-row"><input type="checkbox" id="exp5" value="5" onchange="onExpFilterChange()" /> Director</label>
+      <label class="exp-row"><input type="checkbox" id="exp6" value="6" onchange="onExpFilterChange()" /> Executive</label>
+    </div>
+  </details>
   <label class="control-check">
     <input type="checkbox" id="easyApplyFilter" onchange="onEasyApplyChange()" />
     Easy Apply
@@ -338,7 +407,11 @@ const top400 = '1441%2C1035%2C1063%2C10667%2C1044%2C74126343%2C1406226%2C2301992
 
 const KEYWORDS_STORAGE_KEY = 'liJobKeywords';
 const EASY_APPLY_STORAGE_KEY = 'liJobEasyApply';
+const TIME_STORAGE_KEY = 'liJobTime';
+const COMPANY_STORAGE_KEY = 'liJobCompany';
+const EXP_STORAGE_KEY = 'liJobExp';
 const DEFAULT_KEYWORDS = 'software engineer';
+const DEFAULT_EXP_LEVELS = [1, 2, 3, 4];
 
 function encodeLinkedInKeywords(phrase) {
   const t = (phrase || '').trim() || DEFAULT_KEYWORDS;
@@ -349,6 +422,32 @@ function withKeywords(url, encodedKw) {
   return url.replace(/keywords=[^&]+/, 'keywords=' + encodedKw);
 }
 
+function getSelectedExpLevels() {
+  const out = [];
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById('exp' + i);
+    if (el && el.checked) out.push(i);
+  }
+  return out;
+}
+
+function refreshExpSummary() {
+  const n = getSelectedExpLevels().length;
+  const el = document.getElementById('expSummaryLabel');
+  if (!el) return;
+  el.textContent = n === 0 ? 'Experience · any level' : ('Experience · ' + n + (n === 1 ? ' level' : ' levels'));
+}
+
+function persistFilters() {
+  try {
+    sessionStorage.setItem(KEYWORDS_STORAGE_KEY, document.getElementById('keywordInput').value);
+    sessionStorage.setItem(TIME_STORAGE_KEY, document.getElementById('timeFilter').value);
+    sessionStorage.setItem(COMPANY_STORAGE_KEY, document.getElementById('companyFilter').value);
+    sessionStorage.setItem(EASY_APPLY_STORAGE_KEY, document.getElementById('easyApplyFilter').checked ? '1' : '');
+    sessionStorage.setItem(EXP_STORAGE_KEY, JSON.stringify(getSelectedExpLevels()));
+  } catch (e) { /* private mode / quota */ }
+}
+
 function updateLinks() {
   const kwInput = document.getElementById('keywordInput');
   const enc = encodeLinkedInKeywords(kwInput.value);
@@ -357,7 +456,9 @@ function updateLinks() {
   const co = document.getElementById('companyFilter').value;
   const cParam = co === 'top400' ? '&f_C=' + top400 : '';
   const easyParam = document.getElementById('easyApplyFilter').checked ? '&f_AL=true' : '';
-  const suffix = tprParam + cParam + easyParam;
+  const expLevels = getSelectedExpLevels();
+  const expParam = expLevels.length ? '&f_E=' + expLevels.join('%2C') : '';
+  const suffix = expParam + tprParam + cParam + easyParam;
   states.forEach(s => {
     document.getElementById('btn-' + s.id).href = withKeywords(s.base, enc) + suffix;
   });
@@ -371,10 +472,24 @@ function syncKeywordClearBtn() {
 }
 
 function onKeywordInput() {
-  try {
-    sessionStorage.setItem(KEYWORDS_STORAGE_KEY, document.getElementById('keywordInput').value);
-  } catch (e) { /* private mode / quota */ }
+  persistFilters();
   syncKeywordClearBtn();
+  updateLinks();
+}
+
+function onTimeFilterChange() {
+  persistFilters();
+  updateLinks();
+}
+
+function onCompanyFilterChange() {
+  persistFilters();
+  updateLinks();
+}
+
+function onExpFilterChange() {
+  refreshExpSummary();
+  persistFilters();
   updateLinks();
 }
 
@@ -386,26 +501,39 @@ function clearKeywordInput() {
 }
 
 function onEasyApplyChange() {
-  try {
-    sessionStorage.setItem(EASY_APPLY_STORAGE_KEY, document.getElementById('easyApplyFilter').checked ? '1' : '');
-  } catch (e) { /* private mode / quota */ }
+  persistFilters();
   updateLinks();
 }
 
-(function initKeywords() {
-  let saved = null;
+(function initFromSession() {
+  let kw = null, t = null, c = null, easy = null, expJson = null;
   try {
-    saved = sessionStorage.getItem(KEYWORDS_STORAGE_KEY);
+    kw = sessionStorage.getItem(KEYWORDS_STORAGE_KEY);
+    t = sessionStorage.getItem(TIME_STORAGE_KEY);
+    c = sessionStorage.getItem(COMPANY_STORAGE_KEY);
+    easy = sessionStorage.getItem(EASY_APPLY_STORAGE_KEY);
+    expJson = sessionStorage.getItem(EXP_STORAGE_KEY);
   } catch (e) { /* ignore */ }
-  document.getElementById('keywordInput').value = saved === null ? DEFAULT_KEYWORDS : saved;
-})();
 
-(function initEasyApply() {
-  let v = null;
-  try {
-    v = sessionStorage.getItem(EASY_APPLY_STORAGE_KEY);
-  } catch (e) { /* ignore */ }
-  document.getElementById('easyApplyFilter').checked = v === '1';
+  document.getElementById('keywordInput').value = kw === null ? DEFAULT_KEYWORDS : kw;
+  if (t !== null) document.getElementById('timeFilter').value = t;
+  if (c !== null) document.getElementById('companyFilter').value = c;
+  document.getElementById('easyApplyFilter').checked = easy === '1';
+
+  let levels = DEFAULT_EXP_LEVELS.slice();
+  if (expJson) {
+    try {
+      const parsed = JSON.parse(expJson);
+      if (Array.isArray(parsed) && parsed.length && parsed.every(function (x) { return Number.isInteger(x) && x >= 1 && x <= 6; })) {
+        levels = parsed.slice().sort(function (a, b) { return a - b; });
+      }
+    } catch (e2) { /* keep default */ }
+  }
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById('exp' + i).checked = levels.indexOf(i) !== -1;
+  }
+  refreshExpSummary();
+  persistFilters();
 })();
 
 syncKeywordClearBtn();
