@@ -300,7 +300,9 @@
   .ut:hover { background: linear-gradient(145deg, #3a1515, #2d0d0d); border-color: #cb4335; box-shadow: 0 8px 24px rgba(203,67,53,0.3);   color: #e07b6a; transform: translateY(-2px) scale(1.02); }
   .nc:hover { background: linear-gradient(145deg, #0a2a1a, #051f10); border-color: #1e8449; box-shadow: 0 8px 24px rgba(30,132,73,0.3);   color: #58c888; transform: translateY(-2px) scale(1.02); }
   .nh:hover { background: linear-gradient(145deg, #1d263a, #131b2d); border-color: #4b6fa7; box-shadow: 0 8px 24px rgba(75,111,167,0.3);   color: #8fb5e8; transform: translateY(-2px) scale(1.02); }
+  .in:hover { background: linear-gradient(145deg, #1f1f3a, #131326); border-color: #3f4f9b; box-shadow: 0 8px 24px rgba(63,79,155,0.3);   color: #9ca9ea; transform: translateY(-2px) scale(1.02); }
   .mi:hover { background: linear-gradient(145deg, #0a1a3a, #05102d); border-color: #1f618d; box-shadow: 0 8px 24px rgba(31,97,141,0.3);   color: #5dade2; transform: translateY(-2px) scale(1.02); }
+  .mt:hover { background: linear-gradient(145deg, #1a2a36, #0f1a22); border-color: #3f6a84; box-shadow: 0 8px 24px rgba(63,106,132,0.3);  color: #8bbad4; transform: translateY(-2px) scale(1.02); }
   .pa:hover { background: linear-gradient(145deg, #1a0a2a, #10051f); border-color: #5b2c6f; box-shadow: 0 8px 24px rgba(91,44,111,0.3);   color: #a569bd; transform: translateY(-2px) scale(1.02); }
   .or:hover { background: linear-gradient(145deg, #1a2a0a, #101f05); border-color: #27ae60; box-shadow: 0 8px 24px rgba(39,174,96,0.3);   color: #6fcf97; transform: translateY(-2px) scale(1.02); }
   .mn:hover { background: linear-gradient(145deg, #0a1f2a, #05141f); border-color: #148f77; box-shadow: 0 8px 24px rgba(20,143,119,0.3);  color: #48c9b0; transform: translateY(-2px) scale(1.02); }
@@ -381,9 +383,11 @@
   <a id="btn-fl" class="btn fl" href="" target="_blank"><span class="flag">☀️</span> Florida <span class="arrow">›</span></a>
   <a id="btn-ga" class="btn ga" href="" target="_blank"><span class="flag">🍑</span> Georgia <span class="arrow">›</span></a>
   <a id="btn-il" class="btn il" href="" target="_blank"><span class="flag">🏙️</span> Illinois <span class="arrow">›</span></a>
+  <a id="btn-in" class="btn in" href="" target="_blank"><span class="flag">🏎️</span> Indiana <span class="arrow">›</span></a>
   <a id="btn-ma" class="btn ma" href="" target="_blank"><span class="flag">🦅</span> Massachusetts <span class="arrow">›</span></a>
   <a id="btn-mi" class="btn mi" href="" target="_blank"><span class="flag">🚘</span> Michigan <span class="arrow">›</span></a>
   <a id="btn-mn" class="btn mn" href="" target="_blank"><span class="flag">🌨️</span> Minnesota <span class="arrow">›</span></a>
+  <a id="btn-mt" class="btn mt" href="" target="_blank"><span class="flag">🏔️</span> Montana <span class="arrow">›</span></a>
   <a id="btn-nv" class="btn nv" href="" target="_blank"><span class="flag">🎲</span> Nevada <span class="arrow">›</span></a>
   <a id="btn-nh" class="btn nh" href="" target="_blank"><span class="flag">🏔️</span> New Hampshire <span class="arrow">›</span></a>
   <a id="btn-ny" class="btn ny" href="" target="_blank"><span class="flag">🗽</span> New York <span class="arrow">›</span></a>
@@ -408,9 +412,11 @@ const states = [
   { id: 'fl', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102394087%2C105517665%2C100868799%2C105142029%2C103980349%2C105858804%2C101696514%2C106033654%2C100939624%2C104341466%2C104399612%2C100177841&f_WT=2%2C1%2C3&geoId=101318387&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'ga', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=106224388%2C105409290%2C102112377%2C101352188%2C102119889%2C104139580%2C104172266%2C104295229%2C104318412%2C105654928%2C105972365&f_WT=1%2C3%2C2&geoId=103950076&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'il', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103112676%2C101957782%2C103159347%2C117129172%2C103998438%2C106026973%2C101565517%2C101692508%2C102665576%2C104045661%2C115637822%2C100095672%2C102958361%2C103433271&f_WT=1%2C3%2C2&geoId=101949407&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'in', base: 'https://www.linkedin.com/jobs/search/?geoId=103336534&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_LOCATION_AUTOCOMPLETE&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'ma', base: 'https://www.linkedin.com/jobs/search/?currentJobId=4402182597&f_PP=102380872%2C104597301%2C101568447%2C104362249%2C101192937%2C104181684%2C106260089%2C101246119%2C104180134%2C100807683&f_TPR=r86400&geoId=101098412&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD' },
   { id: 'mi', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102965250%2C105053977%2C100907329%2C105472288%2C103541266%2C104041729%2C100578909%2C103571377%2C104093580%2C106646796%2C100550015%2C103624908&f_WT=1%2C3%2C2&geoId=103051080&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'mn', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103039849%2C104345331%2C106162990%2C100540717%2C100636675%2C102370339%2C103480654%2C106607716%2C100094914%2C101183457%2C102971931%2C105782582&f_WT=1%2C3%2C2&geoId=103411167&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'mt', base: 'https://www.linkedin.com/jobs/search/?geoId=101758306&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'nv', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_WT=1%2C3%2C2&geoId=101690912&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'nh', base: 'https://www.linkedin.com/jobs/search/?f_PP=104210385%2C104634946%2C106489956%2C104439903&f_WT=2%2C1%2C3&geoId=103532695&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'ny', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102571732%2C104361728%2C102201911%2C103676418%2C106553046%2C100074394%2C102570389%2C103138200%2C106027227%2C106143248%2C101240286%2C102405191%2C102462061%2C102645914&f_WT=1%2C3%2C2&geoId=105080838&keywords=software%2Bengineer&location=New%20York%2C%20United%20States&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
