@@ -639,7 +639,7 @@ function onEasyApplyChange() {
 
 function onCitiesChange() {
   const citiesChecked = document.getElementById('citiesFilter').checked;
-  if (citiesChecked) {
+  if (!citiesChecked) {
     document.getElementById('wt1').checked = true;
     document.getElementById('wt2').checked = true;
     document.getElementById('wt3').checked = false;
@@ -679,7 +679,7 @@ function onCitiesChange() {
   refreshWorkplaceSummary();
   document.getElementById('easyApplyFilter').checked = easy === '1';
   document.getElementById('citiesFilter').checked = cities === null ? true : cities === '1';
-  if (document.getElementById('citiesFilter').checked) {
+  if (!document.getElementById('citiesFilter').checked) {
     document.getElementById('wt1').checked = true;
     document.getElementById('wt2').checked = true;
     document.getElementById('wt3').checked = false;
