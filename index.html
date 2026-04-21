@@ -367,6 +367,10 @@
     <input type="checkbox" id="easyApplyFilter" onchange="onEasyApplyChange()" />
     Easy Apply
   </label>
+  <label class="control-check">
+    <input type="checkbox" id="citiesFilter" onchange="onCitiesChange()" checked />
+    Cities
+  </label>
 </div>
 
 <div class="us-wrap">
@@ -437,6 +441,7 @@ const top400 = '1441%2C1035%2C1063%2C10667%2C1044%2C74126343%2C1406226%2C2301992
 
 const KEYWORDS_STORAGE_KEY = 'liJobKeywords';
 const EASY_APPLY_STORAGE_KEY = 'liJobEasyApply';
+const CITIES_STORAGE_KEY = 'liJobCities';
 const TIME_STORAGE_KEY = 'liJobTime';
 const COMPANY_STORAGE_KEY = 'liJobCompany';
 const WORKPLACE_STORAGE_KEY = 'liJobWorkplace';
@@ -465,6 +470,11 @@ function removeParam(url, key) {
 function appendParam(url, key, val) {
   if (!val) return url;
   return url + (url.indexOf('?') >= 0 ? '&' : '?') + key + '=' + val;
+}
+
+function getParamValue(url, key) {
+  const m = url.match(new RegExp('[?&]' + key + '=([^&]+)'));
+  return m ? m[1] : '';
 }
 
 function setFiltersEnabled(enabled) {
@@ -528,6 +538,7 @@ function persistFilters() {
     sessionStorage.setItem(COMPANY_STORAGE_KEY, document.getElementById('companyFilter').value);
     sessionStorage.setItem(WORKPLACE_STORAGE_KEY, JSON.stringify(getSelectedWorkplaceTypes()));
     sessionStorage.setItem(EASY_APPLY_STORAGE_KEY, document.getElementById('easyApplyFilter').checked ? '1' : '');
+    sessionStorage.setItem(CITIES_STORAGE_KEY, document.getElementById('citiesFilter').checked ? '1' : '');
     sessionStorage.setItem(EXP_STORAGE_KEY, JSON.stringify(getSelectedExpLevels()));
   } catch (e) { /* private mode / quota */ }
 }
@@ -543,6 +554,7 @@ function updateLinks() {
   const expLevels = getSelectedExpLevels();
   const expVal = expLevels.length ? expLevels.join('%2C') : '';
   const companyVal = co === 'top400' ? top400 : '';
+  const keepCities = document.getElementById('citiesFilter').checked;
   states.forEach(s => {
     const btn = document.getElementById('btn-' + s.id);
     if (!btn) return;
@@ -552,6 +564,11 @@ function updateLinks() {
     url = removeParam(url, 'f_C');
     url = removeParam(url, 'f_AL');
     url = removeParam(url, 'f_WT');
+    url = removeParam(url, 'f_PP');
+    if (keepCities) {
+      const citiesVal = getParamValue(s.base, 'f_PP');
+      url = appendParam(url, 'f_PP', citiesVal);
+    }
     url = appendParam(url, 'f_E', expVal);
     url = appendParam(url, 'f_TPR', tprVal);
     url = appendParam(url, 'f_C', companyVal);
@@ -620,14 +637,27 @@ function onEasyApplyChange() {
   updateLinks();
 }
 
+function onCitiesChange() {
+  const citiesChecked = document.getElementById('citiesFilter').checked;
+  if (citiesChecked) {
+    document.getElementById('wt1').checked = true;
+    document.getElementById('wt2').checked = true;
+    document.getElementById('wt3').checked = false;
+    refreshWorkplaceSummary();
+  }
+  persistFilters();
+  updateLinks();
+}
+
 (function initFromSession() {
-  let kw = null, t = null, c = null, wt = null, easy = null, expJson = null;
+  let kw = null, t = null, c = null, wt = null, easy = null, cities = null, expJson = null;
   try {
     kw = sessionStorage.getItem(KEYWORDS_STORAGE_KEY);
     t = sessionStorage.getItem(TIME_STORAGE_KEY);
     c = sessionStorage.getItem(COMPANY_STORAGE_KEY);
     wt = sessionStorage.getItem(WORKPLACE_STORAGE_KEY);
     easy = sessionStorage.getItem(EASY_APPLY_STORAGE_KEY);
+    cities = sessionStorage.getItem(CITIES_STORAGE_KEY);
     expJson = sessionStorage.getItem(EXP_STORAGE_KEY);
   } catch (e) { /* ignore */ }
 
@@ -648,6 +678,13 @@ function onEasyApplyChange() {
   }
   refreshWorkplaceSummary();
   document.getElementById('easyApplyFilter').checked = easy === '1';
+  document.getElementById('citiesFilter').checked = cities === null ? true : cities === '1';
+  if (document.getElementById('citiesFilter').checked) {
+    document.getElementById('wt1').checked = true;
+    document.getElementById('wt2').checked = true;
+    document.getElementById('wt3').checked = false;
+    refreshWorkplaceSummary();
+  }
 
   let levels = DEFAULT_EXP_LEVELS.slice();
   if (expJson) {
