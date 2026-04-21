@@ -538,7 +538,7 @@ function persistFilters() {
     sessionStorage.setItem(COMPANY_STORAGE_KEY, document.getElementById('companyFilter').value);
     sessionStorage.setItem(WORKPLACE_STORAGE_KEY, JSON.stringify(getSelectedWorkplaceTypes()));
     sessionStorage.setItem(EASY_APPLY_STORAGE_KEY, document.getElementById('easyApplyFilter').checked ? '1' : '');
-    sessionStorage.setItem(CITIES_STORAGE_KEY, document.getElementById('citiesFilter').checked ? '1' : '');
+    localStorage.setItem(CITIES_STORAGE_KEY, document.getElementById('citiesFilter').checked ? '1' : '');
     sessionStorage.setItem(EXP_STORAGE_KEY, JSON.stringify(getSelectedExpLevels()));
   } catch (e) { /* private mode / quota */ }
 }
@@ -657,7 +657,7 @@ function onCitiesChange() {
     c = sessionStorage.getItem(COMPANY_STORAGE_KEY);
     wt = sessionStorage.getItem(WORKPLACE_STORAGE_KEY);
     easy = sessionStorage.getItem(EASY_APPLY_STORAGE_KEY);
-    cities = sessionStorage.getItem(CITIES_STORAGE_KEY);
+    cities = localStorage.getItem(CITIES_STORAGE_KEY);
     expJson = sessionStorage.getItem(EXP_STORAGE_KEY);
   } catch (e) { /* ignore */ }
 
