@@ -422,7 +422,7 @@ const states = [
   { id: 'mn', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=103039849%2C104345331%2C106162990%2C100540717%2C100636675%2C102370339%2C103480654%2C106607716%2C100094914%2C101183457%2C102971931%2C105782582&f_WT=1%2C3%2C2&geoId=103411167&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'mt', base: 'https://www.linkedin.com/jobs/search/?geoId=101758306&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'nv', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_WT=1%2C3%2C2&geoId=101690912&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
-  { id: 'nh', base: 'https://www.linkedin.com/jobs/search/?f_PP=104210385%2C104634946%2C106489956%2C104439903&f_WT=2%2C1%2C3&geoId=103532695&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
+  { id: 'nh', base: 'https://www.linkedin.com/jobs/search/?geoId=103532695&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_LOCATION_AUTOCOMPLETE&refresh=true&sortBy=DD', citiesPP: '104210385%2C104634946%2C106489956%2C104439903' },
   { id: 'ny', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102571732%2C104361728%2C102201911%2C103676418%2C106553046%2C100074394%2C102570389%2C103138200%2C106027227%2C106143248%2C101240286%2C102405191%2C102462061%2C102645914&f_WT=1%2C3%2C2&geoId=105080838&keywords=software%2Bengineer&location=New%20York%2C%20United%20States&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'nc', base: 'https://www.linkedin.com/jobs/search/?distance=100.0&f_PP=102264677%2C100197101%2C101915197%2C104987206%2C106517346%2C106414689%2C103683544%2C104476887%2C105122117%2C101772619%2C102229593%2C104001298&f_WT=1%2C3%2C2&geoId=103255397&keywords=software%2Bengineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
   { id: 'oh', base: 'https://www.linkedin.com/jobs/search/?f_PP=102812094%2C106310628%2C102356711%2C103045941%2C102981272%2C105482137%2C105516381%2C100502186%2C102428520%2C102636075&f_WT=2%2C1%2C3&geoId=106981407&keywords=software%20engineer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true&sortBy=DD&spellCorrectionEnabled=true' },
@@ -566,7 +566,7 @@ function updateLinks() {
     url = removeParam(url, 'f_WT');
     url = removeParam(url, 'f_PP');
     if (keepCities) {
-      const citiesVal = getParamValue(s.base, 'f_PP');
+      const citiesVal = s.citiesPP || getParamValue(s.base, 'f_PP');
       url = appendParam(url, 'f_PP', citiesVal);
     }
     url = appendParam(url, 'f_E', expVal);
